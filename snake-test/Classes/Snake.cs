@@ -4,125 +4,126 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace snake_test;
-
-class Snake
+namespace snake_test
 {
-    List<Body> bodies;
-    List<BodyEffect> bodyEffects = new List<BodyEffect>();
-    public Vector2i lastDir = Settings.startDir;
-
-    public Snake(Vector2i pos, int length = 1)
+    internal class Snake
     {
-        bodies = new List<Body>();
-        for (int i = 0; i < length; i++)
-        {
-            var body = new Body(pos);
-            body.parent = this;
-            bodies.Add(body);
-        }
-    }
+        List<Body> bodies;
+        List<BodyEffect> bodyEffects = new List<BodyEffect>();
+        public Vector2i lastDir = Settings.startDir;
 
-    public void Update()
-    {
-        if (bodyEffects != null)
+        public Snake(Vector2i pos, int length = 1)
         {
-            foreach (BodyEffect effect in bodyEffects)
+            bodies = new List<Body>();
+            for (int i = 0; i < length; i++)
             {
-                effect.action.Invoke(bodies);
-            }
-        }
-        QueueDraw();
-    }
-
-    public void QueueDraw()
-    {
-        foreach (Body b in bodies)
-        {
-            List<Tile> shape = b.GetShape();
-
-            foreach (Tile t in shape)
-            {
-                var tilePos = t.GetPos();
-                var bodyPos = b.GetPos();
-                Tile tile = new Tile(new Vector2i(tilePos.x + bodyPos.x, tilePos.y + bodyPos.y), t.pixelValue);
-                FrameBuffer.Add(tile);
-            }
-        }
-    }
-
-    public List<Tile> GetTiles()
-    {
-        List<Tile> toReturn = new List<Tile>();
-
-        foreach (Body b in bodies)
-        {
-            List<Tile> shape = b.GetShape();
-
-            foreach (Tile t in shape)
-            {
-                var pos = t.GetPos();
-
-                Tile tile = new Tile(Vector2i.Add(pos, b.GetPos()), t.pixelValue);
-
-                toReturn.Add(tile);
+                var body = new Body(pos);
+                body.parent = this;
+                bodies.Add(body);
             }
         }
 
-        return toReturn;
-    }
-
-    public void Move(Vector2i dir)
-    {
-        lastDir = dir;
-
-        if (bodies.Count < 1) return;
-
-        Body head = bodies[0];
-        Vector2i toMove = Vector2i.Multiply(dir, bodies[bodies.Count - 1].GetSize());
-        Vector2i newPos = Vector2i.Add(head.GetPos(), toMove);
-
-        if (DeadlyCollision(head, newPos))
+        public void Update()
         {
-            GamestateManager.ChangeState("death");
+            if (bodyEffects != null)
+            {
+                foreach (BodyEffect effect in bodyEffects)
+                {
+                    effect.action.Invoke(bodies);
+                }
+            }
+            QueueDraw();
         }
 
-        MoveTail();
-        MoveHead(newPos);
-    }
-
-    bool DeadlyCollision(Body head, Vector2i newPos)
-    {
-        foreach (Tile t in head.GetShape())
+        public void QueueDraw()
         {
-            Tile? tileAtNewPos = FrameBuffer.TileAt(Vector2i.Add(newPos, t.GetPos()));
-            if (tileAtNewPos == null || !Settings.livableTiles.Contains(tileAtNewPos.pixelValue.character))
+            foreach (Body b in bodies)
             {
-                return true;
+                List<Tile> shape = b.GetShape();
+
+                foreach (Tile t in shape)
+                {
+                    var tilePos = t.GetPos();
+                    var bodyPos = b.GetPos();
+                    Tile tile = new Tile(new Vector2i(tilePos.x + bodyPos.x, tilePos.y + bodyPos.y), t.pixelValue);
+                    FrameBuffer.Add(tile);
+                }
             }
         }
 
-        return false;
-    }
-
-    public void MoveTail()
-    {
-        if (bodies.Count < 1) return;
-
-        for (int i = bodies.Count-1; i >= 1; i--)
+        public List<Tile> GetTiles()
         {
-            bodies[i].SetPos(bodies[i - 1].GetPos());
+            List<Tile> toReturn = new List<Tile>();
+
+            foreach (Body b in bodies)
+            {
+                List<Tile> shape = b.GetShape();
+
+                foreach (Tile t in shape)
+                {
+                    var pos = t.GetPos();
+
+                    Tile tile = new Tile(Vector2i.Add(pos, b.GetPos()), t.pixelValue);
+
+                    toReturn.Add(tile);
+                }
+            }
+
+            return toReturn;
         }
-    }
 
-    public void MoveHead(Vector2i newPos)
-    {
-        bodies[0].SetPos(newPos);
-    }
+        public void Move(Vector2i dir)
+        {
+            lastDir = dir;
 
-    public void AddEffect(Action<List<Body>> action)
-    {
-        BodyEffect bodyEffect = new BodyEffect(action);
-        bodyEffects.Add(bodyEffect);
+            if (bodies.Count < 1) return;
+
+            Body head = bodies[0];
+            Vector2i toMove = Vector2i.Multiply(dir, bodies[bodies.Count - 1].GetSize());
+            Vector2i newPos = Vector2i.Add(head.GetPos(), toMove);
+
+            if (DeadlyCollision(head, newPos))
+            {
+                GamestateManager.ChangeState("death");
+            }
+
+            MoveTail();
+            MoveHead(newPos);
+        }
+
+        bool DeadlyCollision(Body head, Vector2i newPos)
+        {
+            foreach (Tile t in head.GetShape())
+            {
+                Tile? tileAtNewPos = FrameBuffer.TileAt(Vector2i.Add(newPos, t.GetPos()));
+                if (tileAtNewPos == null || !Settings.livableTiles.Contains(tileAtNewPos.pixelValue.character))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void MoveTail()
+        {
+            if (bodies.Count < 1) return;
+
+            for (int i = bodies.Count - 1; i >= 1; i--)
+            {
+                bodies[i].SetPos(bodies[i - 1].GetPos());
+            }
+        }
+
+        public void MoveHead(Vector2i newPos)
+        {
+            bodies[0].SetPos(newPos);
+        }
+
+        public void AddEffect(Action<List<Body>> action)
+        {
+            BodyEffect bodyEffect = new BodyEffect(action);
+            bodyEffects.Add(bodyEffect);
+        }
     }
 }

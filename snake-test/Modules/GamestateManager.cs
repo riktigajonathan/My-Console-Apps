@@ -1,44 +1,45 @@
-﻿namespace snake_test;
-
-public static partial class GamestateManager
+﻿namespace snake_test
 {
-    private static readonly List<Gamestate> states = new();
-    private static Gamestate? currentState = null;
-    private static string defaultState = "game";
-
-    public static void InitStates()
+    public static partial class GamestateManager
     {
-        states.Clear();
+        private static readonly List<Gamestate> states = new();
+        private static Gamestate? currentState = null;
+        private static string defaultState = "game";
 
-        AddState(new Game());
-        AddState(new Death());
+        public static void InitStates()
+        {
+            states.Clear();
 
-        ChangeState(defaultState);
-    }
+            AddState(new Game());
+            AddState(new Death());
 
-    public static void AddState(Gamestate state)
-    {
-        states.Add(state);
-    }
+            ChangeState(defaultState);
+        }
 
-    public static void Update()
-    {
-        if (currentState == null) return;
-        currentState.Update();
-    }
+        public static void AddState(Gamestate state)
+        {
+            states.Add(state);
+        }
 
-    public static void ChangeState(string name)
-    {
-        Gamestate? nextState = FindState(name);
-        if (nextState == null) return;
+        public static void Update()
+        {
+            if (currentState == null) return;
+            currentState.Update();
+        }
 
-        currentState?.OnExit();
-        currentState = nextState;
-        currentState.OnEnter();
-    }
+        public static void ChangeState(string name)
+        {
+            Gamestate? nextState = FindState(name);
+            if (nextState == null) return;
 
-    public static Gamestate? FindState(string name)
-    {
-        return states.FirstOrDefault(s => s.name == name);
+            currentState?.OnExit();
+            currentState = nextState;
+            currentState.OnEnter();
+        }
+
+        public static Gamestate? FindState(string name)
+        {
+            return states.FirstOrDefault(s => s.name == name);
+        }
     }
 }

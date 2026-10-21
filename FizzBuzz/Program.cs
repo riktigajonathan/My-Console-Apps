@@ -1,63 +1,64 @@
 ﻿using System.Diagnostics;
 using System.Text;
 
-namespace FizzBuzz;
-
-internal class Program
+namespace FizzBuzz
 {
-    static void Main(string[] args)
+    internal class Program
     {
-        const int count = 100000;
-        const int stopAtMatches = -1;
-
-        KeyValuePair<int, string>[] rules = new KeyValuePair<int, string>[]
+        static void Main(string[] args)
         {
-            new(3, "Fizz"),
-            new(5, "Buzz"),
-            new(7, "Fuzz"),
-            new(11, "Bizz"),
-            new(13, "Biff")
-        };
+            const int count = 100000;
+            const int stopAtMatches = -1;
 
-        StringBuilder sb = new();
-
-        Stopwatch stopwatch = new();
-        stopwatch.Start();
-
-        for (int i = 1; i <= count; i++)
-        {
-            int matches = 0;
-
-            for (int j = 0; j < rules.Length; j++)
+            KeyValuePair<int, string>[] rules = new KeyValuePair<int, string>[]
             {
-                if (i % rules[j].Key == 0)
+                new(3, "Fizz"),
+                new(5, "Buzz"),
+                new(7, "Fuzz"),
+                new(11, "Bizz"),
+                new(13, "Biff")
+            };
+
+            StringBuilder sb = new();
+
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
+
+            for (int i = 1; i <= count; i++)
+            {
+                int matches = 0;
+
+                for (int j = 0; j < rules.Length; j++)
                 {
-                    matches++;
-                    sb.Append(rules[j].Value);
+                    if (i % rules[j].Key == 0)
+                    {
+                        matches++;
+                        sb.Append(rules[j].Value);
+                    }
                 }
-            }
 
-            if (matches == 0)
-            {
-                sb.Append(i);
-            }
-            else if (matches == stopAtMatches)
-            {
+                if (matches == 0)
+                {
+                    sb.Append(i);
+                }
+                else if (matches == stopAtMatches)
+                {
+                    sb.AppendLine();
+                    sb.Append(stopAtMatches).Append(" match(es) found at number ").Append(i).AppendLine("!");
+                    break;
+                }
+
                 sb.AppendLine();
-                sb.Append(stopAtMatches).Append(" match(es) found at number ").Append(i).AppendLine("!");
-                break;
             }
 
-            sb.AppendLine();
+            stopwatch.Stop();
+            long ticks = stopwatch.ElapsedTicks;
+            double elapsedMs = (double)ticks / Stopwatch.Frequency * 1000;
+
+            sb.Append('(').Append(elapsedMs.ToString("0.####")).Append(" ms elapsed)");
+
+            Console.WriteLine(sb.ToString());
+            Console.ReadKey(true);
         }
-
-        stopwatch.Stop();
-        long ticks = stopwatch.ElapsedTicks;
-        double elapsedMs = (double)ticks / Stopwatch.Frequency * 1000;
-
-        sb.Append('(').Append(elapsedMs.ToString("0.####")).Append(" ms elapsed)");
-
-        Console.WriteLine(sb.ToString());
-        Console.ReadKey(true);
     }
 }

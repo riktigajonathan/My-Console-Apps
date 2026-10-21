@@ -1,20 +1,21 @@
 ﻿using System.Numerics;
 using System.Runtime.Intrinsics;
-using static System.Net.WebRequestMethods;
 using System.Threading;
+using static System.Net.WebRequestMethods;
 
-namespace snake_test;
-
-internal class Program
+namespace snake_test
 {
-    static void Main(string[] args)
+    internal class Program
     {
-        FConsole.Initialize("snake");
-        GamestateManager.InitStates();
-
-        while (Settings.gameLoopActive)
+        static void Main(string[] args)
         {
-            GamestateManager.Update();
+            FConsole.Initialize("snake");
+            GamestateManager.InitStates();
+
+            while (Settings.gameLoopActive)
+            {
+                GamestateManager.Update();
+            }
         }
     }
 }

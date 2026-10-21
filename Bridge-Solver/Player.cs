@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-class Player : Deck
+internal class Player : Deck
 {
     public Player(List<Card> cards)
     {

@@ -1,52 +1,53 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
 using System.Numerics;
-using System.Diagnostics;
+using System.Text;
 
-namespace newton_physics_test;
-
-internal class Program
+namespace newton_physics_test
 {
-    static void Main(string[] args)
+    internal class Program
     {
-        Console.CursorVisible = false;
-        Canvas canvas = new(103, 60);
-
-        Body circle = new(new Vector2(20, 20), new Rectangle(10,10), true);
-
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        long lastTicks = stopwatch.ElapsedTicks;
-
-        const int targetFPS = 60;
-        var frameTime = 1.0f / (float)targetFPS; // Target frame time for 60 FPS
-
-        while (true)
+        static void Main(string[] args)
         {
-            float deltaTime = GetDeltaTime();
+            Console.CursorVisible = false;
+            Canvas canvas = new(103, 60);
 
-            // temp
-            for (int i = 0; i < 103; i++)
+            Body circle = new(new Vector2(20, 20), new Rectangle(10, 10), true);
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            long lastTicks = stopwatch.ElapsedTicks;
+
+            const int targetFPS = 60;
+            var frameTime = 1.0f / (float)targetFPS; // Target frame time for 60 FPS
+
+            while (true)
             {
-                canvas.pixels[50,i] = '█';
+                float deltaTime = GetDeltaTime();
+
+                // temp
+                for (int i = 0; i < 103; i++)
+                {
+                    canvas.pixels[50, i] = '█';
+                }
+
+                Body.UpdateAll(deltaTime);
+
+                frameTime -= deltaTime;
+                if (frameTime < 0)
+                {
+                    Body.DrawAll(canvas);
+                    frameTime = 1.0f / (float)targetFPS; // Reset frame time for next frame
+                }
+
+                canvas.Flush();
             }
 
-            Body.UpdateAll(deltaTime);
-
-            frameTime -= deltaTime;
-            if (frameTime < 0)
+            float GetDeltaTime()
             {
-                Body.DrawAll(canvas);
-                frameTime = 1.0f / (float)targetFPS; // Reset frame time for next frame
+                long currentTicks = stopwatch.ElapsedTicks;
+                float deltaTime = (currentTicks - lastTicks) / (float)Stopwatch.Frequency;
+                lastTicks = currentTicks;
+                return deltaTime;
             }
-
-            canvas.Flush();
-        }
-
-        float GetDeltaTime()
-        {
-            long currentTicks = stopwatch.ElapsedTicks;
-            float deltaTime = (currentTicks - lastTicks) / (float)Stopwatch.Frequency;
-            lastTicks = currentTicks;
-            return deltaTime;
         }
     }
 }

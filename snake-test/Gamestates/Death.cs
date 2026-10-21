@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace snake_test;
-
-public class Death : Gamestate
+namespace snake_test
 {
-    public Death() : base("death") { }
-
-    public override void OnEnter()
+    public class Death : Gamestate
     {
-        Settings.gameLoopActive = false;
+        public Death() : base("death") { }
+
+        public override void OnEnter()
+        {
+            Settings.gameLoopActive = false;
+        }
     }
 }

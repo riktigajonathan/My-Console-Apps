@@ -1,8 +1,8 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
-class Deck
+internal class Deck
 {
     protected List<Card> cards = new();
 

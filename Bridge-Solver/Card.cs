@@ -1,6 +1,6 @@
 using System;
 
-class Card 
+internal class Card
 {
     public SUIT Suit { get; private set; }
     public RANK Rank { get; private set; }
@@ -30,26 +30,26 @@ class Card
 }
 
 public enum SUIT
-{ 
-    Klöver, 
-    Ruter, 
-    Hjärter, 
+{
+    Klöver,
+    Ruter,
+    Hjärter,
     Spader,
 }
 
 public enum RANK
-{ 
-    Two = 2, 
-    Three, 
-    Four, 
-    Five, 
-    Six, 
-    Seven, 
-    Eight, 
-    Nine, 
-    Ten, 
-    Jack, 
-    Queen, 
+{
+    Two = 2,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
+    Jack,
+    Queen,
     King,
     Ace,
 }

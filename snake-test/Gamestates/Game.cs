@@ -4,31 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace snake_test;
-
-public class Game : Gamestate
+namespace snake_test
 {
-    public Game() : base("game") { }
-
-    List<Player> players = new();
-    Map map;
-
-    public override void OnEnter()
+    public class Game : Gamestate
     {
-        players.Add(new(Settings.startPos));
-        map = new();
-    }
+        public Game() : base("game") { }
 
-    public override void Update()
-    {
-        map.Update();
-        foreach (Player player in players)
+        List<Player> players = new();
+        Map map;
+
+        public override void OnEnter()
         {
-            player.Update();
+            players.Add(new(Settings.startPos));
+            map = new();
         }
 
-        FrameBuffer.Draw();
+        public override void Update()
+        {
+            map.Update();
+            foreach (Player player in players)
+            {
+                player.Update();
+            }
 
-        Thread.Sleep(Settings.waitMs);
+            FrameBuffer.Draw();
+
+            Thread.Sleep(Settings.waitMs);
+        }
     }
 }

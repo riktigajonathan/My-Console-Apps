@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-class Game
+internal class Game
 {
     private Deck deck;
 
@@ -31,12 +31,12 @@ class Game
                 }
                 else
                 {
-                    break; 
+                    break;
                 }
             }
 
             Player player = new(cards);
-            
+
             players[cardinal] = player;
         }
     }
