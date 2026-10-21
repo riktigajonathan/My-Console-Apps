@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+namespace BridgeSolver;
+
 internal class Player : Deck
 {
     public Player(List<Card> cards)

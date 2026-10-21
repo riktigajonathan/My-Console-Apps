@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+namespace BridgeSolver;
+
 internal class Game
 {
     private Deck deck;

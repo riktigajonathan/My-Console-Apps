@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace BridgeSolver;
+
 internal class Deck
 {
     protected List<Card> cards = new();

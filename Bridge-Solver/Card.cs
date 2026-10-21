@@ -1,5 +1,7 @@
 using System;
 
+namespace BridgeSolver;
+
 internal class Card
 {
     public SUIT Suit { get; private set; }

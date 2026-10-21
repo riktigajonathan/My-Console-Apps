@@ -1,9 +1,8 @@
 using System;
 
-namespace newton_physics_test
+namespace newton_physics_test;
+
+public class Physics
 {
-    public class Physics
-    {
-        public const float Gravity = 44.82f;
-    }
+    public const float Gravity = 44.82f;
 }
