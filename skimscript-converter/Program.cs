@@ -67,6 +67,7 @@ class Parser
         if (match.Success)
         {
             string variableName = match.Groups[1].Value;
+
             string variableType = "var";
             switch (match.Groups[2].Value)
             {
@@ -77,11 +78,13 @@ class Parser
                     variableType = "int";
                     break;
             }
+
             if (variableType == "var")
             {
                 string value = match.Groups[2].Value;
                 return $"{variableType} {variableName} = {value};";
-            } else
+            } 
+            else
             {
                 return $"{variableType} {variableName};";
             }
