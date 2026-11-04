@@ -15,11 +15,10 @@ let name be ""John"".
 
 let greeting be text.
 
-if name is ""John"", then
+let greeting be ""Hi, there"".
 
-print ""Hello, John!"",
-print 5,
-print ""This is the end of the if statement"".
+
+if name is equal to ""John"", then print ""Hello, John!"", print 5, print ""This is the end of the if statement"".
 
 if not,
 
@@ -38,7 +37,7 @@ print ""Hello, stranger!"".
 
 class Parser
 {
-    List<string> variableNames;
+    List<string> variableNames = new();
 
     public string Parse(string script)
     {
@@ -59,7 +58,7 @@ class Parser
         return converted;
     }
 
-    private static string ConvertLetStatement(string line)
+    private string ConvertLetStatement(string line)
     {
         Match match;
 
@@ -68,25 +67,43 @@ class Parser
         {
             string variableName = match.Groups[1].Value;
 
-            string variableType = "var";
-            switch (match.Groups[2].Value)
+            bool usedName = false;
+            if (!variableNames.Contains(variableName))
             {
-                case "str" or "string" or "text":
-                    variableType = "string";
-                    break;
-                case "int" or "integer" or "number":
-                    variableType = "int";
-                    break;
+                variableNames.Add(variableName);
+            }
+            else 
+            {
+                usedName = true;
             }
 
-            if (variableType == "var")
+            string variableType = "var";
+            if (usedName)
+            {
+                variableType = "";
+            }
+            else
+            {
+
+                switch (match.Groups[2].Value)
+                {
+                    case "str" or "string" or "text":
+                        variableType = "string";
+                        break;
+                    case "int" or "integer" or "number":
+                        variableType = "int";
+                        break;
+                }
+            }
+
+            if (variableType == "var" || usedName)
             {
                 string value = match.Groups[2].Value;
-                return $"{variableType} {variableName} = {value};";
+                return $"{variableType} {variableName} = {value};".Trim();
             } 
             else
             {
-                return $"{variableType} {variableName};";
+                return $"{variableType} {variableName};".Trim();
             }
         }
 
