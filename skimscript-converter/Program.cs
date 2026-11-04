@@ -38,24 +38,33 @@ print ""Hello, stranger!"".
 class Parser
 {
     List<string> variableNames = new();
+    string result = "";
 
     public string Parse(string script)
     {
         variableNames = new List<string>();
-        string converted = "";
         script = script.Trim();
 
-        foreach (var l in Regex.Split(script, @"(?<=[.])"))
+        var lines = Regex.Split(script, @"(?<=[.])");
+        foreach (var line in lines)
         {
-            string line = l.Trim();
-
-            if (line.StartsWith("let"))
-            {
-                converted += ConvertLetStatement(line) + "\n";
-            }
+            ParseLine(line);
         }
 
-        return converted;
+        return result;
+    }
+
+    private void ParseLine(string line)
+    {
+        line = line.Trim();
+        if (line.StartsWith("let"))
+        {
+            result += ConvertLetStatement(line) + "\n";
+        }
+        else if (line.StartsWith("if"))
+        {
+            result += ConvertIfStatement(line) + "\n";
+        }
     }
 
     private string ConvertLetStatement(string line)
@@ -105,6 +114,13 @@ class Parser
                 return $"{variableType} {variableName};".Trim();
             }
         }
+
+        return line;
+    }
+
+    private string ConvertIfStatement(string line)
+    {
+        Match match;
 
         return line;
     }
