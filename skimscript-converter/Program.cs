@@ -1,6 +1,6 @@
-﻿namespace skimscript_converter;
+﻿using System.Text.RegularExpressions;
 
-using System.Text.RegularExpressions;
+namespace skimscript_converter;
 
 internal class Program
 {
@@ -84,7 +84,6 @@ class Parser
             }
             else
             {
-
                 switch (match.Groups[2].Value)
                 {
                     case "str" or "string" or "text":
