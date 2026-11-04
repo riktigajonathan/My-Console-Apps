@@ -45,7 +45,7 @@ class Parser
         string converted = "";
         script = script.Trim();
 
-        foreach (var l in Regex.Split(script, @"(?<=[.,])"))
+        foreach (var l in Regex.Split(script, @"(?<=[.])"))
         {
             string line = l.Trim();
 
