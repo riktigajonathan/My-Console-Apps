@@ -115,13 +115,19 @@ class Parser
             }
         }
 
-        return line;
+        return "// unrecognized line: " + line + "";
     }
 
     private string ConvertIfStatement(string line)
     {
         Match match;
 
-        return line;
+        match = Regex.Match(line, @"if\s+(.*?)\s*,\s*then");
+        if (match.Success)
+        {
+            Console.WriteLine(match.Groups[1]);
+        }
+
+        return "// unrecognized line: " + line + "";
     }
 }
