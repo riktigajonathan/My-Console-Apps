@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace skimscript_converter;
@@ -131,22 +132,8 @@ class Parser
             else
             {
                 int idx = FindNextTerminator(text, out char term);
-                string stmt;
-                if (idx == -1)
-                {
-                    stmt = text;
-                    text = "";
-                }
-                else
-                {
-                    stmt = text.Substring(0, idx).Trim();
-                    text = text.Substring(idx + 1);
-                }
-
-                if (!string.IsNullOrEmpty(stmt))
-                {
-                    output += "// unrecognized line: " + stmt + "\n";
-                }
+                if (idx == -1) text = "";
+                else text = text.Substring(idx + 1);
             }
         }
 
@@ -158,7 +145,7 @@ class Parser
         Match match = Regex.Match(text, @"^if\s+(.*?)\s*,\s*then", RegexOptions.Singleline);
         if (!match.Success)
         {
-            return "// unrecognized if statement";
+            return "";
         }
 
         string condition = match.Groups[1].Value;
@@ -242,22 +229,8 @@ class Parser
             else
             {
                 int idx = FindNextTerminator(text, out char term);
-                string stmt;
-                if (idx == -1)
-                {
-                    stmt = text;
-                    text = "";
-                }
-                else
-                {
-                    stmt = text.Substring(0, idx).Trim();
-                    text = text.Substring(idx + 1);
-                }
-
-                if (!string.IsNullOrEmpty(stmt))
-                {
-                    statement += "    // unrecognized line: " + stmt + "\n";
-                }
+                if (idx == -1) text = "";
+                else text = text.Substring(idx + 1);
 
                 if (term == '.')
                 {
@@ -309,9 +282,10 @@ class Parser
         if (match.Success)
         {
             string variableName = match.Groups[1].Value;
+            string rhs = match.Groups[2].Value.Trim();
             string variableType = "var";
 
-            switch (match.Groups[2].Value)
+            switch (rhs)
             {
                 case "str" or "string" or "text":
                     variableType = "string";
@@ -327,21 +301,21 @@ class Parser
                     break;
             }
 
-            string value = match.Groups[2].Value;
+            string value = rhs;
             if (variableType == "float")
                 value += "f";
 
             if (variableType == "var")
             {
-                return $"{variableType} {variableName} = {value};".Trim('.').Trim();
+                return $"{variableType} {variableName} = {value};";
             }
             else
             {
-                return $"{variableType} {variableName}".Trim('.').Trim();
+                return $"{variableType} {variableName};";
             }
         }
 
-        return "// unrecognized line: " + line;
+        return "";
     }
 
     private string ConvertPrintStatement(string line)
@@ -354,6 +328,6 @@ class Parser
             return $"Console.WriteLine({value});";
         }
 
-        return "// unrecognized line: " + line;
+        return "";
     }
 }
