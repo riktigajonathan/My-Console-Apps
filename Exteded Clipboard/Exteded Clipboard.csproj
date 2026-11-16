@@ -8,4 +8,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Json.Net" Version="1.0.33" />
+  </ItemGroup>
+
 </Project>

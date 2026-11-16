@@ -1,5 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace Exteded_Clipboard;
 
@@ -15,25 +19,40 @@ internal class Program
     private static LowLevelKeyboardProc _proc = HookCallback;
     private static IntPtr _hookID = IntPtr.Zero;
 
+    // Store the parsed config globally so OnKeyPressed can read it
+    private static Dictionary<ConsoleKey, string> _keySnippets = new();
+
     static void Main(string[] args)
     {
-        string configPath = "config.json";
-        Console.WriteLine("Reading config file at: ");
+        string jsonFilePath = "config.json";
+        Console.WriteLine($"Reading config file at: {jsonFilePath}");
 
+        if (File.Exists(jsonFilePath))
+        {
+            string json = File.ReadAllText(jsonFilePath);
+            // System.Text.Json automatically converts string JSON keys ("112") into int keys (112)
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+            };
+            _keySnippets = JsonSerializer.Deserialize<Dictionary<ConsoleKey, string>>(json, options) ?? new();
 
+            foreach (var item in _keySnippets)
+            {
+                Console.WriteLine($"Loaded hotkey: {(ConsoleKey)item.Key} ({item.Key}) -> \"{item.Value}\"");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Warning: config.json not found.");
+        }
 
+        Console.WriteLine("\nListening for keypresses globally... Press Ctrl+C in console to exit.");
 
-        Console.WriteLine("Listening for keypresses globally... Press Ctrl+C in console to exit.");
-
-        // 1. Test Clipboard Set & Get
-        SetClipboardText("Hello from C# Windows API!");
-        string? pastedText = GetClipboardText();
-        Console.WriteLine($"Current Clipboard Content: {pastedText}\n");
-
-        // 2. Start Global Key Listener
+        // Start Global Key Listener
         _hookID = SetHook(_proc);
 
-        // 3. Start a Windows Message Loop (Required for the hook to receive events)
+        // Start a Windows Message Loop (Required for the hook to receive events)
         while (GetMessage(out MSG msg, IntPtr.Zero, 0, 0))
         {
             TranslateMessage(ref msg);
@@ -50,6 +69,13 @@ internal class Program
     {
         ConsoleKey key = (ConsoleKey)vkCode;
         Console.WriteLine($"Key Pressed: {key} (Code: {vkCode})");
+
+        // Pass 'key' (ConsoleKey) instead of 'vkCode' (int)
+        if (_keySnippets.TryGetValue(key, out string? textToCopy))
+        {
+            SetClipboardText(textToCopy);
+            Console.WriteLine($"-> Clipboard updated with: \"{textToCopy}\"");
+        }
     }
 
     // ==========================================
@@ -63,7 +89,6 @@ internal class Program
         {
             EmptyClipboard();
 
-            // Allocate global unmanaged memory for the string (+1 for null terminator, *2 for UTF-16)
             int bytes = (text.Length + 1) * 2;
             IntPtr hGlobal = GlobalAlloc(GMEM_MOVEABLE, (UIntPtr)bytes);
             if (hGlobal == IntPtr.Zero) return;
@@ -74,7 +99,6 @@ internal class Program
             try
             {
                 Marshal.Copy(text.ToCharArray(), 0, target, text.Length);
-                // Write null terminator
                 Marshal.WriteInt16(target, text.Length * 2, 0);
             }
             finally
@@ -82,7 +106,6 @@ internal class Program
                 GlobalUnlock(hGlobal);
             }
 
-            // Windows takes ownership of hGlobal after SetClipboardData succeeds
             SetClipboardData(CF_UNICODETEXT, hGlobal);
         }
         finally
@@ -136,7 +159,6 @@ internal class Program
 
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        // nCode >= 0 indicates a valid event; WM_KEYDOWN ensures it only triggers on key press (not release)
         if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
         {
             int vkCode = Marshal.ReadInt32(lParam);
@@ -156,7 +178,6 @@ internal class Program
         public System.Drawing.Point pt;
     }
 
-    // User32.dll Imports
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
@@ -194,7 +215,6 @@ internal class Program
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool IsClipboardFormatAvailable(uint format);
 
-    // Kernel32.dll Imports
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr GetModuleHandle(string lpModuleName);
 
