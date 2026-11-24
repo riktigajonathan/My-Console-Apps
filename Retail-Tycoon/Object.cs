@@ -15,7 +15,7 @@ namespace Retail_Tycoon
 
         public void EnterBuilding(Building building)
         {
-            building.Objects.Add(this);
+            building.AddObject(this);
             CurrentBuilding = building;
         }
 
@@ -23,7 +23,7 @@ namespace Retail_Tycoon
         {
             if (CurrentBuilding == null) return;
 
-            CurrentBuilding.Objects.Remove(this);
+            CurrentBuilding.RemoveObject(this);
             CurrentBuilding = null;
         }
     }
