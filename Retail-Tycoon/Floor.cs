@@ -22,21 +22,15 @@ namespace Retail_Tycoon
                 {
                     char c = ' ';
 
-                    if (j == 0 || j == size.Y - 1)
-                    {
+                    bool isYEdge = j == 0 || j == size.Y - 1;
+                    bool isXEdge = i == 0 || i == size.X - 1;
+
+                    if (isYEdge && isXEdge)
+                        c = Corner;
+                    else if (isYEdge)
                         c = VerticalWall;
-                    }
-                    if (i == 0 || i == size.X-1)
-                    {
-                        if (c == VerticalWall)
-                        {
-                            c = Corner;
-                        }
-                        else
-                        {
-                            c = HorizontalWall;
-                        }
-                    }
+                    else if (isXEdge)
+                        c = HorizontalWall;
 
                     Display += c + " ";
                 }
