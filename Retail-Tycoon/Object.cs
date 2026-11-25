@@ -7,24 +7,36 @@ namespace Retail_Tycoon
 {
     internal class Object
     {
-        public Vector2 Position { get; set; }
+        public List<Tile> Tiles = new();
         /// <summary>
-        /// The building in which the person currently is inside of
+        /// The floor in which the person currently is inside of
         /// </summary>
-        public Building? CurrentBuilding = null;
+        public Floor? CurrentFloor = null;
 
-        public void EnterBuilding(Building building)
+        public void EnterBuilding(Building building) => EnterFloor(building.Floors[0]);
+
+        public void ExitBuilding(Building building) => ExitFloor();
+
+        public void EnterFloor(Floor floor)
         {
-            building.AddObject(this);
-            CurrentBuilding = building;
+            floor.AddObject(this);
+            CurrentFloor = floor;
         }
 
-        public void ExitBuilding()
+        public void ExitFloor()
         {
-            if (CurrentBuilding == null) return;
+            if (CurrentFloor == null) return;
 
-            CurrentBuilding.RemoveObject(this);
-            CurrentBuilding = null;
+            CurrentFloor.RemoveObject(this);
+            CurrentFloor = null;
+        }
+
+        public void Draw()
+        {
+            foreach (var tile in Tiles) 
+            {
+                Screen.Tiles.Add(tile);
+            }
         }
     }
 }

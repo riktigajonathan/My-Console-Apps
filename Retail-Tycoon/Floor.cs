@@ -8,36 +8,61 @@ namespace Retail_Tycoon
     internal class Floor
     {
         public List<Object> Objects = new();
-        public string Display = "";
+        public List<Tile> Tiles = new();
 
-        public char VerticalWall = '|';
-        public char HorizontalWall = '-';
-        public char Corner = 'x';
+        public TileVisual VerticalWall = new('|');
+        public TileVisual HorizontalWall = new('-');
+        public TileVisual Corner = new('x');
+        public int WallThickness = 1;
 
         public Floor(Vector2 size)
         {
+            size.X += WallThickness;
+            size.Y += WallThickness;
+
             for (int i = 0; i < size.X; i++)
             {
                 for (int j = 0; j < size.Y; j++)
                 {
-                    char c = ' ';
+                    TileVisual visual = new();
 
                     bool isYEdge = j == 0 || j == size.Y - 1;
                     bool isXEdge = i == 0 || i == size.X - 1;
 
                     if (isYEdge && isXEdge)
-                        c = Corner;
+                        visual = Corner;
                     else if (isYEdge)
-                        c = VerticalWall;
+                        visual = HorizontalWall;
                     else if (isXEdge)
-                        c = HorizontalWall;
+                        visual = VerticalWall;
 
-                    Display += c + " ";
+                    var pos = new Vector2(i, j);
+
+                    Tiles.Add(new Tile(pos, visual));
                 }
-                Display += '\n';
+            }
+        }
+        public void AddObject(Object obj)
+        {
+            Objects.Add(obj);
+        }
+
+        public void RemoveObject(Object obj)
+        {
+            Objects.Remove(obj);
+        }
+
+        public void Draw()
+        {
+            foreach (Tile tile in Tiles)
+            {
+                tile.Draw();
             }
 
-            Console.WriteLine(Display);
+            foreach (Object obj in Objects)
+            {
+                obj.Draw();
+            }
         }
     }
 }

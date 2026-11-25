@@ -6,14 +6,21 @@ namespace Retail_Tycoon
     {
         static void Main(string[] args)
         {
+            Screen.Init();
+            
             Boss player = new Boss();
 
-            var store = new Store(new Vector2(4,4));
+            var store = new Store(new Vector2(10,2));
             player.OwnedBuildings.Add(store);
-            
+
             player.EnterBuilding(store);
 
-            
+            while (true)
+            {
+                player.CurrentFloor.Draw();
+
+                Screen.Flush();
+            }
         }
     }
 }

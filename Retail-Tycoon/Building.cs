@@ -16,21 +16,5 @@ namespace Retail_Tycoon
                 Floors.Add(new Floor(size));
             }
         }
-
-        public void AddObject(Object obj)
-        {
-            if (Floors.Count == 0) return;
-
-            // Always enter buildings from the first floor
-            Floors[0].Objects.Add(obj);
-        }
-
-        public void RemoveObject(Object obj)
-        {
-            foreach (Floor floor in Floors)
-            {
-                if (floor.Objects.Remove(obj)) return;
-            }
-        }
     }
 }
