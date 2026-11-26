@@ -24,6 +24,11 @@ namespace Retail_Tycoon
             Floors[floorIndex].Draw();
         }
 
+        public void DrawFloor(Floor floor)
+        {
+            DrawFloor(IndexOf(floor));
+        }
+
         public int IndexOf(Floor floor) => Floors.IndexOf(floor);
     }
 }

@@ -19,7 +19,6 @@ namespace Retail_Tycoon
             while (true)
             {
                 store.DrawFloor();
-                player.Draw();
 
                 Screen.Flush();
             }
