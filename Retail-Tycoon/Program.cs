@@ -9,6 +9,7 @@ namespace Retail_Tycoon
             Screen.Init();
             
             Boss player = new Boss();
+            player.Tiles.Add(new Tile(Vector2.Zero, 'O'));
 
             var store = new Store(new Vector2(10,2));
             player.OwnedBuildings.Add(store);
@@ -17,7 +18,7 @@ namespace Retail_Tycoon
 
             while (true)
             {
-                player.CurrentFloor.Draw();
+                store.DrawFloor();
                 player.Draw();
 
                 Screen.Flush();

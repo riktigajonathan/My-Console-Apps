@@ -16,5 +16,14 @@ namespace Retail_Tycoon
                 Floors.Add(new Floor(size));
             }
         }
+
+        public void DrawFloor(int floorIndex = 0)
+        {
+            if (floorIndex >= Floors.Count) return;
+
+            Floors[floorIndex].Draw();
+        }
+
+        public int IndexOf(Floor floor) => Floors.IndexOf(floor);
     }
 }
