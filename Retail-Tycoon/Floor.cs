@@ -20,6 +20,11 @@ namespace Retail_Tycoon
             size.X += WallThickness;
             size.Y += WallThickness;
 
+            Init(size);
+        }
+
+        public void Init(Vector2 size)
+        {
             for (int i = 0; i < size.X; i++)
             {
                 for (int j = 0; j < size.Y; j++)
@@ -42,6 +47,7 @@ namespace Retail_Tycoon
                 }
             }
         }
+
         public void AddObject(Object obj)
         {
             Objects.Add(obj);
