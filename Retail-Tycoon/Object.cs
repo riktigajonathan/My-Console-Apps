@@ -9,7 +9,7 @@ namespace Retail_Tycoon
     {
         public List<Tile> Tiles = new();
         /// <summary>
-        /// The floor in which the person currently is inside of
+        /// The floor in which the object currently is inside of
         /// </summary>
         public Floor? CurrentFloor = null;
 
@@ -35,6 +35,10 @@ namespace Retail_Tycoon
         {
             foreach (var tile in Tiles) 
             {
+                // adjust the position out of the floor's wall
+                var drawTile = tile;
+                drawTile.Pos += Vector2.One*CurrentFloor.WallThickness;
+
                 Screen.Tiles.Add(tile);
             }
         }

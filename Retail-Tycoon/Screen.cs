@@ -7,11 +7,23 @@ namespace Retail_Tycoon
     internal static class Screen
     {
         public static List<Tile> Tiles = new();
+        public static ConsoleColor BackgroundColor = ConsoleColor.Black;
 
         public static void Init()
         {
             Tiles = new();
             Console.CursorVisible = false;
+            Console.Clear();
+
+            for (int i = 0; i < Console.WindowWidth; i++)
+            {
+                for (int j = 0; j < Console.WindowHeight; j++)
+                {
+                    Console.BackgroundColor = BackgroundColor;
+                    Console.SetCursorPosition(i,j);
+                    Console.Write(" ");
+                }
+            }
         }
 
         public static void Flush()

@@ -9,7 +9,7 @@ namespace Retail_Tycoon
         public float Hunger = 0;
         public float Thirst = 0;
         public float Health = 0;
-        public Emotion Emotion = new Emotion();
+        public Emotion Emotion = new Emotion(60, 20);
     }
 
     struct Emotion
